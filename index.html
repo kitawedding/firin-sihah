@@ -116,11 +116,48 @@
                                                                 <div class="elementor-widget-container">
                                                                     <div class="dear">Kepada Yth.<br>Bpk/Ibu/Saudara/i
                                                                     </div>
-                                                                    <div class="nmt" style="margin:7px 0">Nama Tamu
+                                                                    <div class="nmt" style="margin:7px 0"><span id="nama-tamu">Tamu Undangan</span>!
                                                                     </div>
                                                                     <div class="dear notes">di Tempat</div>
                                                                 </div>
                                                             </div>
+                                                            <script>
+                                                                // URL Google Sheets (ganti dengan URL publik Anda)
+                                                                const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTD17SiMK_1dHnFhyr42kOyU0B14Jp5UXptUnRHaQsPW4SUGuHMP1PHjHSytLoibahWrdCbYf5mKgNB/pub?gid=0&single=true&output=csv";
+                                                        
+                                                                // Ambil parameter nama dari URL
+                                                                const urlParams = new URLSearchParams(window.location.search);
+                                                                const namaParam = urlParams.get('nama')?.toLowerCase();
+                                                        
+                                                                // Fetch data dari Google Sheets
+                                                                fetch(SHEET_URL)
+                                                                    .then(res => {
+                                                                        if (!res.ok) throw new Error("Network response was not ok");
+                                                                        return res.text();
+                                                                    })
+                                                                    .then(csvData => {
+                                                                        // Parse CSV data
+                                                                        const namaList = csvData.split('\n')
+                                                                            .map(row => row.split(',')[0].trim().toLowerCase())
+                                                                            .filter(name => name.length > 0);
+                                                                        
+                                                                        console.log("Daftar nama dari sheet:", namaList); // Debug log
+                                                                        
+                                                                        // Cek apakah nama ada di daftar
+                                                                        if (namaParam && namaList.includes(namaParam)) {
+                                                                            document.getElementById('nama-tamu').textContent = 
+                                                                                namaParam.charAt(0).toUpperCase() + namaParam.slice(1);
+                                                                        }
+                                                                    })
+                                                                    .catch(err => {
+                                                                        console.error("Error mengambil data:", err);
+                                                                        // Fallback jika terjadi error
+                                                                        if (namaParam) {
+                                                                            document.getElementById('nama-tamu').textContent = 
+                                                                                namaParam.charAt(0).toUpperCase() + namaParam.slice(1);
+                                                                        }
+                                                                    });
+                                                            </script>
                                                             <div class="elementor-element elementor-element-3b246ee8 elementor-align-center animated-slow elementor-invisible elementor-widget elementor-widget-button"
                                                                 data-id="3b246ee8" data-element_type="widget"
                                                                 data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:500}"
